@@ -1,7 +1,7 @@
 # Udemy-web-development-bootcamp
 Repository created for storing files for the undemy web development bootcamp.
 
-Each folder under the root of the repository represents an independent project.
+Each folder under the root of the repository represents an independent mini project.
 
 ---
 
@@ -28,4 +28,7 @@ A website design created for an imaginary pseudo-startup Tindog. Pure HTML and C
 ### Dicee Game
 
 A very basic project for practicing basic JavaScript DOM manipulation.
+
+### Drum Kit
+A website where you can play drums. Created for practicing intermediate JavaScript and DOM manipulation, notably event handling.
 
