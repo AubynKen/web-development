@@ -1,0 +1,15 @@
+{
+  "name": "js-exercice",
+  "version": "1.0.0",
+  "description": "\"This is an intro to node project\"",
+  "main": "Hello_World.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "AubynKen Pinglei He",
+  "license": "ISC",
+  "dependencies": {
+    "superheroes": "^3.0.0",
+    "supervillains": "^3.0.0"
+  }
+}
