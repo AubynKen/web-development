@@ -20,6 +20,6 @@ $("html").on("keydown", function (e) {
 
 $("button").html("Click me to have more LUUV");
 $("button").on("click", function () {
-    $("h1").append(" LUUV ");
+    $("h1").animate
     $("h1").append("<img src = 'HelenSchtuSchtu.png' alt='HelenSchtewSchtew' style='height:60px;'>");
 })
