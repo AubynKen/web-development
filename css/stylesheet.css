@@ -1,0 +1,115 @@
+
+
+body {
+    text-align: center;
+    color: #222;
+    background-color: #EEE;
+    /*font-family: 'Indie Flower', cursive;*/
+}
+
+
+
+h1 {
+    margin: 2.5rem;
+}
+
+a {
+    color: inherit;
+}
+
+
+/* navigation-bar */
+
+nav {
+    background-color: #DDD;
+    padding: 2.5rem;
+    font-family: 'Indie Flower', cursive;
+}
+
+nav a {
+    color: black;
+    margin: 2rem;
+}
+
+.navbar-element a {
+    display: inline;
+}
+
+/*presentation*/
+
+.presentation-description {
+    color: #444;
+}
+
+.presentation p {
+    width: 50%;
+    margin: 0 auto;
+}
+
+/*carousel*/
+.website-showcase {
+    background-color: #EEE;
+    margin: 1rem auto 1rem;
+}
+
+.carousel-inner {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.showcase-site-img {
+    width: 100%;
+    margin:auto;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    height: 100px;
+    width: 100px;
+    outline: #333;
+    background-size: 100%, 100%;
+    border-radius: 50%;
+    border: 2px solid #333;
+    background-image: none;
+}
+
+.carousel-control-next-icon:after
+{
+    content: '>';
+    font-size: 55px;
+    color: #333;
+}
+
+.carousel-control-prev-icon:after {
+    content: '<';
+    font-size: 55px;
+    color: #333;
+}
+
+.website-showcase p {
+    margin-top : 2rem;
+    font-family: 'Indie Flower', cursive;
+}
+
+/*footer*/
+
+
+
+footer {
+    background-color: #EEE;
+    padding: 2.5rem;
+}
+
+footer a {
+    color: black;
+    margin: 2rem;
+}
+
+/*testing*/
+.horizontally {
+    height: 100rem;
+}
+
+.eg {
+    width: 50%;
+}
