@@ -1,0 +1,8 @@
+.container div {
+    display: inline-block;
+    text-align: center;
+}
+
+div img {
+    display: block;
+}
