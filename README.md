@@ -1,4 +1,4 @@
-# Web Development Mini Projects
+# Web Development Mini Projects and toy projects
 Repository created for storing files for learning Web Development.
 Each folder under the root of the repository represents an independent mini project.
 
