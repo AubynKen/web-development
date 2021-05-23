@@ -1,0 +1,15 @@
+{
+  "name": "language-guesser",
+  "version": "1.0.0",
+  "description": "A toy project for practicing npm",
+  "main": "languageGuesser.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pinglei He",
+  "license": "ISC",
+  "dependencies": {
+    "franc": "^3.1.0",
+    "langs": "^2.0.0"
+  }
+}
