@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showing you the hottest new post</title>
+</head>
+
+<body>
+    <% const {username, 'comment':userComment} = comment; %>
+    <h1>Post by <%= username %></h1>
+    <p><%= userComment %> </p>
+    <a href="/comments"><button>Go back to frontpage</button></a>
+
+</body>
+
+</html>

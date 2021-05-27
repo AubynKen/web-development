@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments</title>
+</head>
+
+<body>
+    <h1>Here are the user comments</h1>
+    <% comments.forEach(el => { %>
+    <p>
+        <%= el.comment %> <b><%= el.username %></b>
+        <a href="/comments/<%= el.id %>"><button>See details</button></a>
+        <a href="/comments/edit/<%= el.id %>"><button>Edit post</button></a>
+        <form action="/comments/<%= el.id %>/?_method=DELETE " id="delete_btn" style="display:inline-block"
+            method="post">
+            <button type="submit">DELETE</button>
+        </form>
+    </p>
+    <% }) %>
+    <p><a href="/comments/new"><button>New Post</button></a></p>
+</body>
+
+</html>
