@@ -32,3 +32,8 @@ A very basic dice game project for practicing basic JavaScript DOM manipulation.
 ### Drum Kit
 A website where you can play drums. Created for practicing intermediate JavaScript and DOM manipulation, notably event handling.
 
+### RESTful toy forum
+A toy project for practicing express. Basic CRUD functionalities on a pseudo-forum.
+
+### Random color on click
+Just as the titles says... a webpage where every time you click, you get a random color.
