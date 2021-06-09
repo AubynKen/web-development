@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const campgroundSchema = Schema({
+const campgroundSchema = new Schema({
     title: {
         type: String,
         required: true,
@@ -10,8 +10,26 @@ const campgroundSchema = Schema({
     price: Number,
     description: String,
     location: String,
+    reviews: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Review",
+        },
+    ],
 });
 
-const Campground = mongoose.model('Campground', campgroundSchema);
+const Campground = mongoose.model("Campground", campgroundSchema);
+
+campgroundSchema.post("findOneAndDelete", async (doc) => {
+    //TODO remove log
+    console.log("deleting");
+    //endTodo
+    if (doc) {
+        const reviews = doc.reviews;
+        await Review.deleteMany({
+            _id: { $in: reviews },
+        });
+    }
+});
 
 module.exports = Campground;
