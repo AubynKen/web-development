@@ -1,15 +1,36 @@
+/* ==== Settings ==== */
+const developmentMode = true;
+const port = 3000;
+
+/* ==== Express ==== */
 const express = require("express");
 const app = express();
-const path = require("path");
-const mongoose = require("mongoose");
-const Campground = require("./models/campground");
-const Review = require("./models/review");
+
+/*==== Middleware and stuff ====*/
 const methodOverride = require("method-override");
 const engine = require("ejs-mate");
-const catchAsync = require("./utils/catchAsync.js");
+const session = require("express-session");
+const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
+
+/*==== Useful functions ====*/
+const path = require("path");
+// const catchAsync = require("./utils/catchAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
-const joi = require("joi");
-const { campgroundSchema } = require("./schemas.js");
+
+/*==== Routers ====*/
+const campgroundRoute = require("./routes/campgrounds.js");
+const reviewRoute = require("./routes/reviews.js");
+const userRoute = require("./routes/users.js");
+
+/* ==== Mongoose ====*/
+const mongoose = require("mongoose");
+// Some default mongoose settings result in deprecation warning, the next few lines reset them.
+mongoose.set("useNewUrlParser", true);
+mongoose.set("useFindAndModify", false);
+mongoose.set("useCreateIndex", true);
 
 mongoose
     .connect("mongodb://localhost:27017/yelp-camp", {
@@ -24,130 +45,63 @@ mongoose
         console.log(err);
     });
 
-// Validation of the campground schema
-function campgroundValidation(req, res, next) {
-    const joiValidation = campgroundSchema.validate(req.body);
-    if (joiValidation.error) {
-        const errorMsg = joiValidation.error.details.map((err) => err.message);
-        throw new ExpressError(errorMsg);
-    } else {
-        next();
-    }
-}
-
+/*==== Setting up middleware and some other settings ====*/
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.use(express.static("public"));
+app.use(
+    session({
+        secret: "justsomerandomwords",
+        resave: false,
+        saveUninitialized: false,
+        // cookie: {
+        //     maxAge: expirationMs,
+        //     httpOnly: true,
+        // },
+    })
+);
+
+// Authentication
+app.use(passport.initialize(undefined));
+app.use(passport.session(undefined));
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+/*==== flash alert ====*/
+app.use(flash());
+
+/*==== Request-response loop local variables ====*/
+app.use((req, res, next) => {
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    res.locals.currentUser = req.user;
+    next();
+});
+
+// Routers
+app.use("/", userRoute);
+app.use("/campgrounds/:campgroundId/reviews", reviewRoute);
+app.use("/campgrounds", campgroundRoute);
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.engine("ejs", engine);
 
-app.get(
-    "/campgrounds",
-    catchAsync(async (req, res) => {
-        const campgrounds = await Campground.find({});
-        res.render("campgrounds/index", {
-            campgrounds,
-        });
-    })
-);
-
-app.get("/campgrounds/new", (req, res) => {
-    res.render("campgrounds/new");
-});
-
-app.get(
-    "/campgrounds/:id",
-    catchAsync(async (req, res) => {
-        const id = req.params.id;
-        const campground = await Campground.findById(id).populate("reviews");
-        res.render("campgrounds/show", {
-            campground,
-        });
-    })
-);
-
-app.get("/campgrounds/:id/edit", async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findById(id);
-    res.render("campgrounds/edit.ejs", {
-        campground,
-    });
-});
-
-app.put(
-    "/campgrounds/:id",
-    campgroundValidation,
-    catchAsync(async (req, res) => {
-        const { id } = req.params;
-        await Campground.findByIdAndUpdate(id, req.body.campground);
-        res.redirect(`/campgrounds/${id}`);
-    })
-);
-
-// Add new campground
-app.post(
-    "/campgrounds",
-    campgroundValidation,
-    catchAsync(async (req, res) => {
-        const campground = new Campground(req.body.campground);
-        await campground.save();
-        res.redirect(`/campgrounds/${campground._id}`);
-    })
-);
-
-// Delete campground
-app.delete(
-    "/campgrounds/:id",
-    catchAsync(async (req, res) => {
-        const { id } = req.params;
-        await Campground.findByIdAndDelete(id);
-        res.redirect("/campgrounds");
-    })
-);
-
-// Post reviews
-app.post(
-    "/campgrounds/:id/reviews",
-    catchAsync(async (req, res) => {
-        const { id } = req.params;
-        const { review: reviewForm } = req.body;
-        const review = new Review(reviewForm);
-        const campground = await Campground.findById(id);
-        campground.reviews.push(review);
-        await review.save();
-        await campground.save();
-        res.redirect(`/campgrounds/${id}`);
-    })
-);
-
-// Delete reviews TODO: test
-app.delete(
-    "/campgrounds/:campgroundId/reviews/:reviewId",
-    catchAsync(async (req, res) => {
-        const { campgroundId, reviewId } = req.params;
-        await Campground.findByIdAndUpdate(campgroundId, { $pull: { reviews: reviewId } });
-        await Review.findByIdAndDelete(reviewId);
-        res.redirect(`/campgrounds/${campgroundId}`);
-    })
-);
-
 /*=====When nothing above matched the route===========================================================================*/
 app.all("*", (req, res, next) => {
     next(new ExpressError("404 Page Not Found", 404));
 });
 
-//When error catched
-// TODO: Make it an actual error catching middleware
+/* ==== Renders an error page when error caught ====*/
 app.use((err, req, res, next) => {
-    const { message = "Something went wrong", status = 500 } = err;
-    res.status(status).render("error", {
-        message,
-    });
+    const { statusCode = 500 } = err;
+    if (!err.message) err.message = "Oh No, Something Went Wrong!";
+    res.status(statusCode).render("error", { message: err });
 });
-// endTodo
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log("Server up and running.");
 });
